@@ -13,7 +13,7 @@ Alle Kommandos werden im Wurzelverzeichnis der Applikation ausgeführt.
 
 ## Applikation bauen
 * Abhängigkeiten installieren: `npm install`
-* `.env.sample` nach `.env` kopieren und gegebenenfalls die Werte anpassen
+* `.env.example` nach `.env` kopieren und gegebenenfalls die Werte anpassen
 * Applikation bauen `npm run build`
 
 ## Vektordatenbank starten

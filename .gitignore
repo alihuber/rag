@@ -27,3 +27,4 @@ coverage/
 vendor/
 
 files/*.pdf
+files/*.txt

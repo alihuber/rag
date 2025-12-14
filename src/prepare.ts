@@ -1,4 +1,6 @@
-import { PDFLoader } from '@langchain/community/document_loaders/fs/pdf';
+import { config } from 'dotenv-safe';
+config();
+import { TextLoader } from 'langchain/document_loaders/fs/text';
 import { RecursiveCharacterTextSplitter } from '@langchain/textsplitters';
 import { Milvus } from '@langchain/community/vectorstores/milvus';
 import { RunnableLambda, RunnableSequence } from '@langchain/core/runnables';
@@ -6,23 +8,24 @@ import { Document } from 'langchain/document';
 import { OllamaEmbeddings } from '@langchain/ollama';
 import { performance } from 'perf_hooks';
 
-const chunkSize = parseInt(process.env.CHUNK_SIZE || '1000', 10) ;
+const chunkSize = parseInt(process.env.CHUNK_SIZE || '1000', 10);
 const chunkOverlap = parseInt(process.env.CHUNK_OVERLAP || '200', 10);
 const embeddingsModel = process.env.EMBEDDINGS_MODEL || 'nomic-embed-text';
-const milvusTextFieldMaxLength = parseInt(process.env.MILVUS_TEXT_FIELD_MAX_LENGTH || '2000', 10);
+const milvusTextFieldMaxLength = parseInt(
+  process.env.MILVUS_TEXT_FIELD_MAX_LENGTH || '2000',
+  10
+);
 const collectionName = process.env.COLLECTION_NAME || 'rag_collection';
-const inputFile = process.env.INPUT_FILE || './files/input.pdf';
+const inputFile = process.env.INPUT_FILE || './files/input.txt';
 
-const loadPDF = new RunnableLambda({
+const loadFile = new RunnableLambda({
   func: async (file: string): Promise<Document> => {
-    console.log('Loading PDF');
+    console.log('Loading txt');
     const startTime = performance.now();
-    const loader = new PDFLoader(file, {
-      splitPages: false,
-    });
+    const loader = new TextLoader(file);
     const docs = await loader.load();
     const endTime = performance.now();
-    console.log(`PDF loaded in ${endTime - startTime} milliseconds`);
+    console.log(`txt loaded in ${endTime - startTime} milliseconds`);
     return docs[0];
   },
 });
@@ -45,6 +48,7 @@ const storeVectors = new RunnableLambda({
     console.log('Storing vectors');
     const embeddings = new OllamaEmbeddings({
       model: embeddingsModel,
+      requestOptions: { num_batch: 1000, use_mmap: true },
     });
     await Milvus.fromTexts(data.texts, data.metadata, embeddings, {
       collectionName,
@@ -55,7 +59,7 @@ const storeVectors = new RunnableLambda({
   },
 });
 
-const sequence = RunnableSequence.from([loadPDF, splitText, storeVectors]);
+const sequence = RunnableSequence.from([loadFile, splitText, storeVectors]);
 await sequence.invoke(inputFile);
 
 console.log('Done');
