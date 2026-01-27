@@ -1,10 +1,10 @@
 import { config } from 'dotenv-safe';
 config();
-import { TextLoader } from 'langchain/document_loaders/fs/text';
+import { TextLoader } from '@langchain/classic/document_loaders/fs/text';
 import { RecursiveCharacterTextSplitter } from '@langchain/textsplitters';
 import { Milvus } from '@langchain/community/vectorstores/milvus';
 import { RunnableLambda, RunnableSequence } from '@langchain/core/runnables';
-import { Document } from 'langchain/document';
+import { Document } from '@langchain/core/documents';
 import { OllamaEmbeddings } from '@langchain/ollama';
 import { performance } from 'perf_hooks';
 

@@ -1,4 +1,4 @@
-import { formatDocumentsAsString } from 'langchain/util/document';
+import { formatDocumentsAsString } from '@langchain/classic/util/document';
 import { PromptTemplate } from '@langchain/core/prompts';
 import {
   RunnableSequence,

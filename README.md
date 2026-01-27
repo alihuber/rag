@@ -23,7 +23,7 @@ Im infrastructure-Verzeichnis: `docker compose up`
 
 ### Vorbereitung
 * (PDF-) Dateien im `files`-Verzeichnis speichern und in der `.env` die Variable `INPUT_FILE` anpassen
-* `npm run prepare`
+* `npm run prep`
 
 ### RAG
 * Prompt anpassen: in der `.env` die Variable `PROMPT` anpassen
